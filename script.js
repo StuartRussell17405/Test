@@ -1,4 +1,4 @@
-// Simple Pong game
+// Simple Pong game (fast mode)
 // Left paddle: player (mouse + arrow keys)
 // Right paddle: basic AI
 // Ball bounces, scoreboard, collision detection, pause (Space)
@@ -24,7 +24,7 @@
   // Paddles
   const PADDLE_WIDTH = 12;
   const PADDLE_HEIGHT = 90;
-  const PADDLE_SPEED = 6.5; // when using keys
+  const PADDLE_SPEED = 12; // faster keyboard movement
 
   const leftPaddle = {
     x: 20,
@@ -40,7 +40,7 @@
     width: PADDLE_WIDTH,
     height: PADDLE_HEIGHT,
     dy: 0,
-    maxSpeed: 5.0
+    maxSpeed: 10.0 // faster AI paddle
   };
 
   // Ball
@@ -48,7 +48,7 @@
     x: WIDTH / 2,
     y: HEIGHT / 2,
     radius: 9,
-    speed: 5,
+    speed: 0,
     vx: 0,
     vy: 0
   };
@@ -71,7 +71,8 @@
   function resetBall(direction = 0) {
     ball.x = WIDTH / 2;
     ball.y = HEIGHT / 2;
-    ball.speed = 5 + Math.min(playerScore + computerScore, 6) * 0.15; // gently increase with play time
+    // Significantly higher base speed, scales with combined score
+    ball.speed = 9 + Math.min(playerScore + computerScore, 12) * 0.35;
 
     // random angle between -45 and 45 degrees
     const angleDeg = (Math.random() * 90 - 45);
@@ -161,7 +162,6 @@
     leftPaddle.y = clamp(leftPaddle.y, 0, HEIGHT - leftPaddle.height);
 
     // Computer AI: simple follow with max speed and slight prediction
-    // Predictive: try to move towards where the ball will be (limited)
     let targetY = ball.y - rightPaddle.height / 2;
     // Only react strongly when ball is moving towards AI
     if (ball.vx < 0) {
@@ -231,7 +231,7 @@
     const maxAngle = (60 * Math.PI) / 180;
     const angle = relativeY * maxAngle;
 
-    const speedIncrease = 0.25; // small increase
+    const speedIncrease = 0.8; // larger increase for faster play
     const currentSpeed = Math.hypot(ball.vx, ball.vy) + speedIncrease;
 
     // Determine direction (ball should go away from paddle)
@@ -239,9 +239,10 @@
     ball.vx = dir * currentSpeed * Math.cos(angle);
     ball.vy = currentSpeed * Math.sin(angle);
 
-    // Slight nudge so ball doesn't get stuck in a near-vertical loop
-    if (Math.abs(ball.vx) < 1.2) {
-      ball.vx = dir * (ball.vx < 0 ? -1.2 : 1.2);
+    // Enforce a higher minimum horizontal speed so the ball stays "fast"
+    const minHorizontal = 2.5;
+    if (Math.abs(ball.vx) < minHorizontal) {
+      ball.vx = dir * minHorizontal;
     }
   }
 

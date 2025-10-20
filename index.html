@@ -7,18 +7,31 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
+  <div class="game-wrap">
     <h1>Simple Pong</h1>
-    <div id="scoreboard">
-      <span id="playerScore">0</span>
-      <span class="sep">—</span>
-      <span id="cpuScore">0</span>
+
+    <div class="scoreboard">
+      <div class="score player">
+        <span id="playerScore">0</span>
+        <div class="label">Player</div>
+      </div>
+      <div class="score computer">
+        <span id="computerScore">0</span>
+        <div class="label">Computer</div>
+      </div>
     </div>
-    <canvas id="game" width="800" height="500"></canvas>
-    <div id="instructions">
-      Move left paddle: mouse or ArrowUp/ArrowDown · Space = pause · R = reset
+
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+    <div class="controls">
+      Controls: Move mouse over the canvas or use Up / Down arrow keys to move the left paddle.
+      <br />
+      First to 10 points wins (you can change this in script.js). Press Space to pause / resume.
     </div>
+
+    <div id="message" class="message hidden"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
